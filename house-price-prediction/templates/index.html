@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Price Predictor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <h1>🏡 House Price Predictor</h1>
+        <p class="subtitle">Enter the details of the property to get an estimated market price.</p>
+
+        {% if prediction_text %}
+        <div class="result-card">
+            <h2>{{ prediction_text }}</h2>
+            {% if explanation_text %}
+            <p class="explanation">{{ explanation_text }}</p>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <form action="/predict" method="post">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="location_type">Location Type</label>
+                    <select name="location_type" id="location_type" required>
+                        <option value="Urban" {{ 'selected' if input_data and input_data.location_type=='Urban' else ''
+                            }}>Urban</option>
+                        <option value="Rural" {{ 'selected' if input_data and input_data.location_type=='Rural' else ''
+                            }}>Rural</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="area">Area (sq ft)</label>
+                    <input type="number" name="area" id="area" placeholder="e.g. 2000"
+                        value="{{ input_data.area if input_data else '' }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="bedrooms">Bedrooms</label>
+                    <input type="number" name="bedrooms" id="bedrooms" min="1" max="10" placeholder="e.g. 3"
+                        value="{{ input_data.bedrooms if input_data else '' }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="bathrooms">Bathrooms</label>
+                    <input type="number" name="bathrooms" id="bathrooms" min="1" max="10" placeholder="e.g. 2"
+                        value="{{ input_data.bathrooms if input_data else '' }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="stories">Stories</label>
+                    <input type="number" name="stories" id="stories" min="1" max="5" placeholder="e.g. 2"
+                        value="{{ input_data.stories if input_data else '' }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="parking">Parking Spaces</label>
+                    <input type="number" name="parking" id="parking" min="0" max="5" placeholder="e.g. 1"
+                        value="{{ input_data.parking if input_data else '' }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="year_built">Year Built</label>
+                    <input type="number" name="year_built" id="year_built" min="1900" max="2024" placeholder="e.g. 2010"
+                        value="{{ input_data.year_built if input_data else '' }}" required>
+                </div>
+
+                <!-- Categorical Features -->
+                <div class="form-group">
+                    <label for="mainroad">Main Road Access</label>
+                    <select name="mainroad" id="mainroad" required>
+                        <option value="yes" {{ 'selected' if input_data and input_data.mainroad=='yes' else '' }}>Yes
+                        </option>
+                        <option value="no" {{ 'selected' if input_data and input_data.mainroad=='no' else '' }}>No
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="guestroom">Guest Room</label>
+                    <select name="guestroom" id="guestroom" required>
+                        <option value="yes" {{ 'selected' if input_data and input_data.guestroom=='yes' else '' }}>Yes
+                        </option>
+                        <option value="no" {{ 'selected' if input_data and input_data.guestroom=='no' else '' }}>No
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="basement">Basement</label>
+                    <select name="basement" id="basement" required>
+                        <option value="yes" {{ 'selected' if input_data and input_data.basement=='yes' else '' }}>Yes
+                        </option>
+                        <option value="no" {{ 'selected' if input_data and input_data.basement=='no' else '' }}>No
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="hotwaterheating">Hot Water Heating</label>
+                    <select name="hotwaterheating" id="hotwaterheating" required>
+                        <option value="yes" {{ 'selected' if input_data and input_data.hotwaterheating=='yes' else ''
+                            }}>Yes</option>
+                        <option value="no" {{ 'selected' if input_data and input_data.hotwaterheating=='no' else '' }}>
+                            No</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="airconditioning">Air Conditioning</label>
+                    <select name="airconditioning" id="airconditioning" required>
+                        <option value="yes" {{ 'selected' if input_data and input_data.airconditioning=='yes' else ''
+                            }}>Yes</option>
+                        <option value="no" {{ 'selected' if input_data and input_data.airconditioning=='no' else '' }}>
+                            No</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="furnishingstatus">Furnishing Status</label>
+                    <select name="furnishingstatus" id="furnishingstatus" required>
+                        <option value="furnished" {{ 'selected' if input_data and
+                            input_data.furnishingstatus=='furnished' else '' }}>Furnished</option>
+                        <option value="semi-furnished" {{ 'selected' if input_data and
+                            input_data.furnishingstatus=='semi-furnished' else '' }}>Semi-Furnished</option>
+                        <option value="unfurnished" {{ 'selected' if input_data and
+                            input_data.furnishingstatus=='unfurnished' else '' }}>Unfurnished</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="predict-btn">🚀 Predict Price</button>
+        </form>
+    </div>
+</body>
+
+</html>
